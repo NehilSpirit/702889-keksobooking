@@ -57,9 +57,6 @@ var before = document.querySelector('.map__filters-container');
 /* создает пустой контейнер для шаблонов */
 var fragment = document.createDocumentFragment();
 
-/* убирает класс */
-document.querySelector('.map.map--faded').classList.remove('map--faded');
-
 /* Вычисляет случайное чисто в диапазоне между min - max */
 function getRandomNum(min, max) {
   return Math.round(Math.random() * (max - min) + min); // ну тут все ясно и так)
@@ -122,7 +119,7 @@ var createInfoArray = function (num) {
 };
 
 /* наполняем массив */
-createInfoArray(ARR_NUM);
+// createInfoArray(ARR_NUM);
 
 
 /*  функция создает шаблон метки и заполняет данными из массива ads */
@@ -145,7 +142,7 @@ var appendPin = function (item) {
 
 };
 
-appendPin(listPins);
+// appendPin(listPins);
 
 /* проверяет значения для вставки в ".popup__type"*/
 var addType = function (obj) {
@@ -181,6 +178,7 @@ var createCard = function (item) {
   item.offer.rooms + ' комнаты для ' + item.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent =
   'Заезд после ' + item.offer.checkin + ' , выезд до ' + item.offer.checkout + '.';
+
   cardElement.querySelector('.popup__features').innerHTML = '';
   item.offer.features.forEach(function (element) {
     var blockFeatures = similarCardTamplate.querySelector('.popup__feature--' + element).cloneNode(true);
@@ -206,4 +204,113 @@ var appendCard = function (item) {
   similarListCardElement.insertBefore(fragment, before);
 };
 
-appendCard(listPins[0]);
+// appendCard(listPins[0]);
+
+/* Неактивное состояние. При первом открытии, страница находится в неактивном состоянии: блок с картой находится в
+неактивном состоянии, форма подачи заявления заблокирована.
+
+Блок с картой .map содержит класс map--faded;
+Форма заполнения информации об объявлении .ad-form содержит класс ad-form--disabled;
+Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled, добавленного на них или на их
+родительские блоки fieldset.
+Форма с фильтрами .map__filters заблокирована так же, как и форма .ad-form.
+
+Единственное доступное действие в неактивном состоянии — перетаскивание метки .map__pin--main, являющейся
+контролом указания адреса объявления. Первое перемещение метки переводит страницу в активное состояние.
+
+2.4. Адрес:
+
+Ручное редактирование поля запрещено. Значение автоматически выставляется при перемещении метки .map__pin--main по карте.
+Подробности заполнения поля адреса, описаны вместе с поведением метки.
+
+3.1. Приблизительный адрес квартиры указывается перетаскиванием специальной метки по карте Токио.
+При перемещении изменяется значение соответствующего поля ввода. Содержимое поле адреса не может быть пустым: сразу после загрузки страницы и после сброса формы,
+ значение должно соответствовать координатам метки.
+
+3.2. Формат значения поля адреса: {{x}}, {{y}}, где {{x}} и {{y}} это координаты, на которые метка
+указывает своим острым концом (середина нижнего края блока с меткой).
+
+4.3. В каждый момент времени может быть открыта только одна карточка,
+
+то есть нажатие метку другого похожего объявления должно закрывать текущую карточку, если она открыта и показывать карточку, соответствующую другому объявлению.
+
+4.4. Открытую карточку с подробной информацией можно закрыть или нажатием на иконку крестика в правом верхнем углу объявления или нажатием на клавишу Esc на клавиатуре.*/
+
+/* Активное состояние страницы */
+var ESC = 27;
+var mapFilters = document.querySelector('.map__filters');
+
+var mapFilter = document.querySelectorAll('.map__filter');
+
+var adFormElement = document.querySelectorAll('.ad-form__element');
+
+var adForm = document.querySelector('.ad-form.ad-form--disabled');
+
+var mapFaded = document.querySelector('.map.map--faded');
+
+var inputAddress = document.querySelector('#address');
+
+var activeButton = document.querySelector('.map__pin--main');
+
+var removeDisabled = function (element) {
+  element.removeAttribute('disabled');
+};
+
+activeButton.addEventListener('mouseup', function (evt) {
+  mapFaded.classList.remove('map--faded');
+  mapFilters.removeAttribute('disabled');
+  adForm.removeAttribute('disabled');
+  adForm.classList.remove('ad-form--disabled');
+
+  mapFilter.forEach(function (elem) {
+    removeDisabled(elem);
+  });
+  adFormElement.forEach(function (elem) {
+    removeDisabled(elem);
+  });
+
+  inputAddress.value = evt.clientX + ', ' + evt.clientY;
+  createInfoArray(ARR_NUM);
+  appendPin(listPins);
+});
+
+/* Активация обьявлений*/
+/* Работает но один раз */
+var allMapPins = document.getElementsByClassName('map__pin');
+for (var i = 0; i < allMapPins.length; i++) {
+  allMapPins[i].addEventListener('click', function () {
+    appendCard(listPins[i]);
+
+  });
+}
+
+/* вообще не работает
+// appendCard(listPins[i]);
+var pinClickOpenAdsHendler = function (pin, obj) {
+  pin.addEventListener('click', function () {
+    appendCard(obj);
+    //obj.classList.remove('hidden');
+  });
+};
+
+for (var i = 0; i < allMapPins.length; i++) {
+  pinClickOpenAdsHendler(allMapPins[i], listPins[i]);
+}
+*/
+
+/* должно закрываться по крестику или эскейпу, 
+наверное что то с областями видимости */
+/*
+var mapPopup = document.querySelector('.map__card popup');
+mapPopup.classList.add('hidden');
+var closeButton = document.querySelector('.popup__close');
+
+closeButton.addEventListener('click', function () {
+  mapPopup.classList.add('hidden');
+});
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC) {
+    mapPopup.classList.add('hidden');
+  }
+});
+*/
