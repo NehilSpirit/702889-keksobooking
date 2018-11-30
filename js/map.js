@@ -4,6 +4,7 @@
 var ARR_NUM = 8;
 var PIN_HEIGHT = 40;
 var PIN_WIDTH = 40;
+var ESC = 27;
 
 var offerPhotos = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -56,6 +57,23 @@ var before = document.querySelector('.map__filters-container');
 
 /* создает пустой контейнер для шаблонов */
 var fragment = document.createDocumentFragment();
+
+/* Для активации полей форм*/
+var mapFilters = document.querySelector('.map__filters');
+
+var mapFilter = document.querySelectorAll('.map__filter');
+
+var adFormElement = document.querySelectorAll('.ad-form__element');
+
+var adForm = document.querySelector('.ad-form.ad-form--disabled');
+
+var mapFaded = document.querySelector('.map.map--faded');
+
+/* для активации метки*/
+var inputAddress = document.querySelector('#address');
+
+var activeButton = document.querySelector('.map__pin--main');
+
 
 /* Вычисляет случайное чисто в диапазоне между min - max */
 function getRandomNum(min, max) {
@@ -133,16 +151,24 @@ var createPin = function (item) {
 
   return pinElement;
 };
-/* отрисовывает метки */
+
+/* отрисовывает метки по клику на кекс */
 var appendPin = function (item) {
   item.forEach(function (elem) {
-    fragment.appendChild(createPin(elem));
+    // создаем элемент пин
+    var pin = createPin(elem);
+
+    pin.addEventListener('click', function () {
+      appendCard(elem); // (getRandomElem(listPins));
+    });
+    fragment.appendChild(pin);// по выходу из функции надо удалить обработчик.
+    // Иначе карточки будут создаваться при перетаскивании метки . но к анонимному не обратишься.
+    // а сломать страшно
   });
   similarListElement.appendChild(fragment);
 
 };
 
-// appendPin(listPins);
 
 /* проверяет значения для вставки в ".popup__type"*/
 var addType = function (obj) {
@@ -202,64 +228,41 @@ var createCard = function (item) {
 var appendCard = function (item) {
   fragment.appendChild(createCard(item));
   similarListCardElement.insertBefore(fragment, before);
+
+  var closeButton = similarListCardElement.querySelector('.popup__close');
+  var mapPopup = similarListCardElement.querySelector('.map__card.popup');
+
+  closeButton.addEventListener('click', oncloseMapPopupClick);
+  document.addEventListener('keydown', onclosePopupEscPress);
+
 };
 
-// appendCard(listPins[0]);
-
-/* Неактивное состояние. При первом открытии, страница находится в неактивном состоянии: блок с картой находится в
-неактивном состоянии, форма подачи заявления заблокирована.
-
-Блок с картой .map содержит класс map--faded;
-Форма заполнения информации об объявлении .ad-form содержит класс ad-form--disabled;
-Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled, добавленного на них или на их
-родительские блоки fieldset.
-Форма с фильтрами .map__filters заблокирована так же, как и форма .ad-form.
-
-Единственное доступное действие в неактивном состоянии — перетаскивание метки .map__pin--main, являющейся
-контролом указания адреса объявления. Первое перемещение метки переводит страницу в активное состояние.
-
-2.4. Адрес:
-
-Ручное редактирование поля запрещено. Значение автоматически выставляется при перемещении метки .map__pin--main по карте.
-Подробности заполнения поля адреса, описаны вместе с поведением метки.
-
-3.1. Приблизительный адрес квартиры указывается перетаскиванием специальной метки по карте Токио.
-При перемещении изменяется значение соответствующего поля ввода. Содержимое поле адреса не может быть пустым: сразу после загрузки страницы и после сброса формы,
- значение должно соответствовать координатам метки.
-
-3.2. Формат значения поля адреса: {{x}}, {{y}}, где {{x}} и {{y}} это координаты, на которые метка
-указывает своим острым концом (середина нижнего края блока с меткой).
-
-4.3. В каждый момент времени может быть открыта только одна карточка,
-
-то есть нажатие метку другого похожего объявления должно закрывать текущую карточку, если она открыта и показывать карточку, соответствующую другому объявлению.
-
-4.4. Открытую карточку с подробной информацией можно закрыть или нажатием на иконку крестика в правом верхнем углу объявления или нажатием на клавишу Esc на клавиатуре.*/
-
-/* Активное состояние страницы */
-var ESC = 27;
-var mapFilters = document.querySelector('.map__filters');
-
-var mapFilter = document.querySelectorAll('.map__filter');
-
-var adFormElement = document.querySelectorAll('.ad-form__element');
-
-var adForm = document.querySelector('.ad-form.ad-form--disabled');
-
-var mapFaded = document.querySelector('.map.map--faded');
-
-var inputAddress = document.querySelector('#address');
-
-var activeButton = document.querySelector('.map__pin--main');
-
+/* Закрывает карточку обьявления по ESc */
+var onclosePopupEscPress = function (evt) {
+  if (evt.keyCode === ESC) {
+    mapPopup.classList.add('hidden');
+  }
+};
+/* Закрывает карточку обьявления по клику*/
+var oncloseMapPopupClick = function () {
+   mapPopup.classList.add('hidden');
+  document.removeEventListener('keydown', onclosePopupEscPress);
+};
+/* Удaляет атрибут disabled*/
 var removeDisabled = function (element) {
   element.removeAttribute('disabled');
 };
 
+var removeClassHidden = function () {
+  mapPopup.classList.add('hidden');
+};
+
+/* По клику активирует форму и пины */
+
 activeButton.addEventListener('mouseup', function (evt) {
   mapFaded.classList.remove('map--faded');
   mapFilters.removeAttribute('disabled');
-  adForm.removeAttribute('disabled');
+  removeDisabled(adForm);
   adForm.classList.remove('ad-form--disabled');
 
   mapFilter.forEach(function (elem) {
@@ -270,47 +273,21 @@ activeButton.addEventListener('mouseup', function (evt) {
   });
 
   inputAddress.value = evt.clientX + ', ' + evt.clientY;
+  /* наполняем массив */
   createInfoArray(ARR_NUM);
   appendPin(listPins);
 });
 
-/* Активация обьявлений*/
-/* Работает но один раз */
-var allMapPins = document.getElementsByClassName('map__pin');
-for (var i = 0; i < allMapPins.length; i++) {
-  allMapPins[i].addEventListener('click', function () {
-    appendCard(listPins[i]);
 
-  });
-}
-
-/* вообще не работает
-// appendCard(listPins[i]);
-var pinClickOpenAdsHendler = function (pin, obj) {
-  pin.addEventListener('click', function () {
-    appendCard(obj);
-    //obj.classList.remove('hidden');
-  });
-};
-
-for (var i = 0; i < allMapPins.length; i++) {
-  pinClickOpenAdsHendler(allMapPins[i], listPins[i]);
-}
+/*Функция  appendPin генерирует метки из массива listPins. 
+При клике на любую из меток ,вызывается функция appendCard, 
+которая генерирует ОДНУ карточку обьявления. 
+   Данная карточка существует 
+только в пределах этой функции. Что бы реализовать закрытие катрочки по "click" и 
+EscPress нужно вызвать функции oncloseMapPopupClick и onclosePopupEscPress.
+    но так как карточка существует только в appendCard, то не удается обратится к катрочке
+    извне. и невозможна корректная работа oncloseMapPopupClick и onclosePopupEscPress.
+    Их корректная работа возможна только усли поместить их внутрь функции appendCard,
+    что нежелательно ибо превращает функцию 'магическую кнопку'
 */
 
-/* должно закрываться по крестику или эскейпу, 
-наверное что то с областями видимости */
-/*
-var mapPopup = document.querySelector('.map__card popup');
-mapPopup.classList.add('hidden');
-var closeButton = document.querySelector('.popup__close');
-
-closeButton.addEventListener('click', function () {
-  mapPopup.classList.add('hidden');
-});
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC) {
-    mapPopup.classList.add('hidden');
-  }
-});
-*/
