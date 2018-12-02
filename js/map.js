@@ -158,12 +158,9 @@ var appendPin = function (item) {
     // создаем элемент пин
     var pin = createPin(elem);
 
-    pin.addEventListener('click', function () {
-      appendCard(elem); // (getRandomElem(listPins));
-    });
-    fragment.appendChild(pin);// по выходу из функции надо удалить обработчик.
-    // Иначе карточки будут создаваться при перетаскивании метки . но к анонимному не обратишься.
-    // а сломать страшно
+    pin.addEventListener('click', onCreatePopupPinClin.bind(elem));
+
+    fragment.appendChild(pin);
   });
   similarListElement.appendChild(fragment);
 
@@ -232,34 +229,32 @@ var appendCard = function (item) {
   var closeButton = similarListCardElement.querySelector('.popup__close');
   var mapPopup = similarListCardElement.querySelector('.map__card.popup');
 
-  closeButton.addEventListener('click', oncloseMapPopupClick);
-  document.addEventListener('keydown', onclosePopupEscPress);
+  closeButton.addEventListener('click', oncloseMapPopupClick.bind(mapPopup), {once: true});
+  mapPopup.addEventListener('keydown', onclosePopupEscPress.bind(mapPopup), {once: true});
 
 };
 
 /* Закрывает карточку обьявления по ESc */
-var onclosePopupEscPress = function (evt) {
+var onclosePopupEscPress = function (evt, mapPopup) {
   if (evt.keyCode === ESC) {
-    mapPopup.classList.add('hidden');
+    this.remove();
   }
 };
 /* Закрывает карточку обьявления по клику*/
-var oncloseMapPopupClick = function () {
-   mapPopup.classList.add('hidden');
-  document.removeEventListener('keydown', onclosePopupEscPress);
+var oncloseMapPopupClick = function (mapPopup) {
+  this.remove();
 };
 /* Удaляет атрибут disabled*/
 var removeDisabled = function (element) {
   element.removeAttribute('disabled');
 };
 
-var removeClassHidden = function () {
-  mapPopup.classList.add('hidden');
+var onCreatePopupPinClin = function (elem) {
+  appendCard(this);
 };
 
 /* По клику активирует форму и пины */
-
-activeButton.addEventListener('mouseup', function (evt) {
+var onActiveButtonMouseup = function (evt) {
   mapFaded.classList.remove('map--faded');
   mapFilters.removeAttribute('disabled');
   removeDisabled(adForm);
@@ -276,18 +271,6 @@ activeButton.addEventListener('mouseup', function (evt) {
   /* наполняем массив */
   createInfoArray(ARR_NUM);
   appendPin(listPins);
-});
+};
 
-
-/*Функция  appendPin генерирует метки из массива listPins. 
-При клике на любую из меток ,вызывается функция appendCard, 
-которая генерирует ОДНУ карточку обьявления. 
-   Данная карточка существует 
-только в пределах этой функции. Что бы реализовать закрытие катрочки по "click" и 
-EscPress нужно вызвать функции oncloseMapPopupClick и onclosePopupEscPress.
-    но так как карточка существует только в appendCard, то не удается обратится к катрочке
-    извне. и невозможна корректная работа oncloseMapPopupClick и onclosePopupEscPress.
-    Их корректная работа возможна только усли поместить их внутрь функции appendCard,
-    что нежелательно ибо превращает функцию 'магическую кнопку'
-*/
-
+activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
