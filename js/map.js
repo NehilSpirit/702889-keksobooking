@@ -1,9 +1,11 @@
+/* eslint-disable no-invalid-this */
 
 'use strict';
 
 var ARR_NUM = 8;
 var PIN_HEIGHT = 40;
 var PIN_WIDTH = 40;
+var ESC = 27;
 
 var offerPhotos = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -57,8 +59,22 @@ var before = document.querySelector('.map__filters-container');
 /* создает пустой контейнер для шаблонов */
 var fragment = document.createDocumentFragment();
 
-/* убирает класс */
-document.querySelector('.map.map--faded').classList.remove('map--faded');
+/* Для активации полей форм*/
+var mapFilters = document.querySelector('.map__filters');
+
+var mapFilter = document.querySelectorAll('.map__filter');
+
+var adFormElement = document.querySelectorAll('.ad-form__element');
+
+var adForm = document.querySelector('.ad-form.ad-form--disabled');
+
+var mapFaded = document.querySelector('.map.map--faded');
+
+/* для активации метки*/
+var inputAddress = document.querySelector('#address');
+
+var activeButton = document.querySelector('.map__pin--main');
+
 
 /* Вычисляет случайное чисто в диапазоне между min - max */
 function getRandomNum(min, max) {
@@ -122,7 +138,7 @@ var createInfoArray = function (num) {
 };
 
 /* наполняем массив */
-createInfoArray(ARR_NUM);
+// createInfoArray(ARR_NUM);
 
 
 /*  функция создает шаблон метки и заполняет данными из массива ads */
@@ -136,16 +152,21 @@ var createPin = function (item) {
 
   return pinElement;
 };
-/* отрисовывает метки */
+
+/* отрисовывает метки по клику на кекс */
 var appendPin = function (item) {
   item.forEach(function (elem) {
-    fragment.appendChild(createPin(elem));
+    // создаем элемент пин
+    var pin = createPin(elem);
+
+    pin.addEventListener('click', onCreatePopupPinClin.bind(elem));
+
+    fragment.appendChild(pin);
   });
   similarListElement.appendChild(fragment);
 
 };
 
-appendPin(listPins);
 
 /* проверяет значения для вставки в ".popup__type"*/
 var addType = function (obj) {
@@ -181,6 +202,7 @@ var createCard = function (item) {
   item.offer.rooms + ' комнаты для ' + item.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent =
   'Заезд после ' + item.offer.checkin + ' , выезд до ' + item.offer.checkout + '.';
+
   cardElement.querySelector('.popup__features').innerHTML = '';
   item.offer.features.forEach(function (element) {
     var blockFeatures = similarCardTamplate.querySelector('.popup__feature--' + element).cloneNode(true);
@@ -202,8 +224,64 @@ var createCard = function (item) {
 
 // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
 var appendCard = function (item) {
+  var popup = document.querySelector('.map__card.popup');
+  if (popup) {
+    popup.parentNode.removeChild(popup);
+  }
+/* все конечно работает. но все на куче и в одной функции две переменные,
+ которые ссылаются на один обьект. ну тоесть на разные но кажется что на один и тот же*/
   fragment.appendChild(createCard(item));
   similarListCardElement.insertBefore(fragment, before);
+
+  var closeButton = similarListCardElement.querySelector('.popup__close');
+  var mapPopup = similarListCardElement.querySelector('.map__card.popup');
+
+  closeButton.addEventListener('click', oncloseMapPopupClick.bind(mapPopup, closeButton), {once: true});
+  mapPopup.addEventListener('keydown', onclosePopupEscPress.bind(mapPopup, closeButton), {once: true});
+
 };
 
-appendCard(listPins[0]);
+/* Закрывает карточку обьявления по ESc */
+var onclosePopupEscPress = function (closeButton, evt) {
+  if (evt.keyCode === ESC) {
+    closeButton.removeEventListener('click', oncloseMapPopupClick);
+    this.removeEventListener('keydown', onclosePopupEscPress);
+    this.parentNode.removeChild(this);
+  }
+};
+/* Закрывает карточку обьявления по клику*/
+var oncloseMapPopupClick = function (closeButton, evt) {
+  closeButton.removeEventListener('click', oncloseMapPopupClick);
+  this.removeEventListener('keydown', onclosePopupEscPress);
+  this.parentNode.removeChild(this);
+};
+/* Удaляет атрибут disabled*/
+var removeDisabled = function (element) {
+  element.removeAttribute('disabled');
+};
+
+var onCreatePopupPinClin = function (elem) {
+  appendCard(this);
+};
+
+/* По клику активирует форму и пины */
+var onActiveButtonMouseup = function (evt) {
+  mapFaded.classList.remove('map--faded');
+  mapFilters.removeAttribute('disabled');
+  removeDisabled(adForm);
+  adForm.classList.remove('ad-form--disabled');
+
+  mapFilter.forEach(function (elem) {
+    removeDisabled(elem);
+  });
+  adFormElement.forEach(function (elem) {
+    removeDisabled(elem);
+  });
+
+  inputAddress.value = evt.clientX + ', ' + evt.clientY;
+  /* наполняем массив */
+  createInfoArray(ARR_NUM);
+  appendPin(listPins);
+};
+
+activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
