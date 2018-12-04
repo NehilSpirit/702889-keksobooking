@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 
 'use strict';
 
@@ -223,26 +224,36 @@ var createCard = function (item) {
 
 // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
 var appendCard = function (item) {
+  var popup = document.querySelector('.map__card.popup');
+  if (popup) {
+    popup.parentNode.removeChild(popup);
+  }
+/* все конечно работает. но все на куче и в одной функции две переменные,
+ которые ссылаются на один обьект. ну тоесть на разные но кажется что на один и тот же*/
   fragment.appendChild(createCard(item));
   similarListCardElement.insertBefore(fragment, before);
 
   var closeButton = similarListCardElement.querySelector('.popup__close');
   var mapPopup = similarListCardElement.querySelector('.map__card.popup');
 
-  closeButton.addEventListener('click', oncloseMapPopupClick.bind(mapPopup), {once: true});
-  mapPopup.addEventListener('keydown', onclosePopupEscPress.bind(mapPopup), {once: true});
+  closeButton.addEventListener('click', oncloseMapPopupClick.bind(mapPopup, closeButton), {once: true});
+  mapPopup.addEventListener('keydown', onclosePopupEscPress.bind(mapPopup, closeButton), {once: true});
 
 };
 
 /* Закрывает карточку обьявления по ESc */
-var onclosePopupEscPress = function (evt, mapPopup) {
+var onclosePopupEscPress = function (closeButton, evt) {
   if (evt.keyCode === ESC) {
-    this.remove();
+    closeButton.removeEventListener('click', oncloseMapPopupClick);
+    this.removeEventListener('keydown', onclosePopupEscPress);
+    this.parentNode.removeChild(this);
   }
 };
 /* Закрывает карточку обьявления по клику*/
-var oncloseMapPopupClick = function (mapPopup) {
-  this.remove();
+var oncloseMapPopupClick = function (closeButton, evt) {
+  closeButton.removeEventListener('click', oncloseMapPopupClick);
+  this.removeEventListener('keydown', onclosePopupEscPress);
+  this.parentNode.removeChild(this);
 };
 /* Удaляет атрибут disabled*/
 var removeDisabled = function (element) {
