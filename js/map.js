@@ -170,20 +170,19 @@ var appendPin = function (item) {
 
 /* проверяет значения для вставки в ".popup__type"*/
 var addType = function (obj) {
-  var result;
   if (obj === 'flat') {
-    result = 'Квартира';
+    obj = 'Квартира';
   }
   if (obj === 'palace') {
-    result = 'Дворец';
+    obj = 'Дворец';
   }
   if (obj === 'house') {
-    result = 'Дом';
+    obj = 'Дом';
   }
   if (obj === 'bung') {
-    result = 'Бунгало';
+    obj = 'Бунгало';
   }
-  return result;
+  return obj;
 
 };
 
@@ -228,7 +227,7 @@ var appendCard = function (item) {
   if (popup) {
     popup.parentNode.removeChild(popup);
   }
-/* все конечно работает. но все на куче и в одной функции две переменные,
+  /* все конечно работает. но все на куче и в одной функции две переменные,
  которые ссылаются на один обьект. ну тоесть на разные но кажется что на один и тот же*/
   fragment.appendChild(createCard(item));
   similarListCardElement.insertBefore(fragment, before);
@@ -250,6 +249,7 @@ var onclosePopupEscPress = function (closeButton, evt) {
   }
 };
 /* Закрывает карточку обьявления по клику*/
+// eslint-disable-next-line no-unused-vars
 var oncloseMapPopupClick = function (closeButton, evt) {
   closeButton.removeEventListener('click', oncloseMapPopupClick);
   this.removeEventListener('keydown', onclosePopupEscPress);
@@ -260,6 +260,7 @@ var removeDisabled = function (element) {
   element.removeAttribute('disabled');
 };
 
+// eslint-disable-next-line no-unused-vars
 var onCreatePopupPinClin = function (elem) {
   appendCard(this);
 };
@@ -285,3 +286,60 @@ var onActiveButtonMouseup = function (evt) {
 };
 
 activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
+
+(function () {
+/* валидация формы
+Посмотрите вдруг чего не хватает. Все равно я так и не поняла задание толком */
+  var priceInput = document.querySelector('#price');
+  var typeInput = document.querySelector('#type');
+
+  var roomNumberInput = document.querySelector('#room_number');
+  var capacityInput = document.querySelector('#capacity');
+
+  var timeinInput = document.querySelector('#timein');
+  var timeoutInput = document.querySelector('#timeout');
+
+  timeoutInput.addEventListener('input', function (evt) {
+    evt.target.value = timeinInput.value;
+  });
+
+  typeInput.addEventListener('input', function (evt) {
+    defineMinPrise(evt.target.value);
+  });
+
+  capacityInput.addEventListener('invalid', function (evt) {
+    var target = evt.target;
+    if ((target.value <= roomNumberInput.value) && (roomNumberInput.value !== 100)) {
+      target.setCustomValidity('');
+    } else {
+      target.setCustomValidity('Вы выбрли некорректное количество гостей');
+    }
+    if (roomNumberInput.value === 100) {
+      target.value = 0;
+      target.setCustomValidity('');
+    } else {
+      target.setCustomValidity('Вы выбрли некорректное количество гостей');
+    }
+  });
+
+  var defineMinPrise = function (obj) {
+
+    if (obj === 'bungalo') {
+      priceInput.minlength = '0';
+      priceInput.placeholder = '0';
+    }
+    if (obj === 'flat') {
+      priceInput.minlength = '1000';
+      priceInput.placeholder = '1000';
+    }
+    if (obj === 'house') {
+      priceInput.minlength = '5000';
+      priceInput.placeholder = '5000';
+    }
+    if (obj === 'palace') {
+      priceInput.minlength = '10000';
+      priceInput.placeholder = '10000';
+    }
+  };
+})();
+
