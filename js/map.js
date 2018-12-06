@@ -288,8 +288,8 @@ var onActiveButtonMouseup = function (evt) {
 activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
 
 (function () {
-/* валидация формы
-Посмотрите вдруг чего не хватает. Все равно я так и не поняла задание толком */
+/* валидация формы */
+
   var priceInput = document.querySelector('#price');
   var typeInput = document.querySelector('#type');
 
@@ -300,14 +300,18 @@ activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
   var timeoutInput = document.querySelector('#timeout');
 
   timeoutInput.addEventListener('input', function (evt) {
-    evt.target.value = timeinInput.value;
+    timeinInput.value = evt.target.value;
+  });
+
+  timeinInput.addEventListener('input', function (evt) {
+    timeoutInput.value = evt.target.value;
   });
 
   typeInput.addEventListener('input', function (evt) {
     defineMinPrise(evt.target.value);
   });
 
-  capacityInput.addEventListener('invalid', function (evt) {
+  capacityInput.addEventListener('input', function (evt) {
     var target = evt.target;
     if ((target.value <= roomNumberInput.value) && (roomNumberInput.value !== 100)) {
       target.setCustomValidity('');
@@ -323,23 +327,23 @@ activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
   });
 
   var defineMinPrise = function (obj) {
-
-    if (obj === 'bungalo') {
-      priceInput.minlength = '0';
-      priceInput.placeholder = '0';
+    var price;
+    switch (obj) {
+      case 'bungalo':
+        price = '0';
+        break;
+      case 'flat':
+        price = '1000';
+        break;
+      case 'house':
+        price = '5000';
+        break;
+      case 'palace':
+        price = '10000';
+        break;
+      default:
     }
-    if (obj === 'flat') {
-      priceInput.minlength = '1000';
-      priceInput.placeholder = '1000';
-    }
-    if (obj === 'house') {
-      priceInput.minlength = '5000';
-      priceInput.placeholder = '5000';
-    }
-    if (obj === 'palace') {
-      priceInput.minlength = '10000';
-      priceInput.placeholder = '10000';
-    }
+    priceInput.minlength = priceInput.placeholder = price;
   };
 })();
 
