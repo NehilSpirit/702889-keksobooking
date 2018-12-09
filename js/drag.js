@@ -39,30 +39,35 @@
       y: moveEvt.clientY
     };
 
-    if ((mapPin.offsetLeft - shift.x - (PIN_WIDTH / 2)) < MIN_X) {
-      mapPin.style.left = 0 + 'px';
-    }
-    if ((mapPin.offsetLeft - shift.x - (PIN_WIDTH / 2)) > MAX_X) {
-      mapPin.style.left = MAX_X + 'px';
-    }
-    if ((mapPin.offsetTop - shift.y + PIN_HEIGHT) < MIN_Y) {
-      mapPin.style.top = MIN_Y + 'px';
-    }
-    if ((mapPin.offsetTop - shift.y + PIN_HEIGHT) > MAX_Y) {
-      mapPin.style.top = MAX_Y + 'px';
+    var mapPinStyleLeft = mapPin.offsetLeft - shift.x;
+    var mapPinStyleTop = mapPin.offsetTop - shift.y;
+
+
+    if (mapPin.offsetLeft - shift.x + PIN_WIDTH / 2 <= MIN_X) {
+      mapPin.style.left = MIN_X - PIN_WIDTH / 2 + 'px';
+    } else if (mapPin.offsetLeft - shift.x + PIN_WIDTH / 2 >= MAX_X) {
+      mapPin.style.left = (MAX_X - PIN_WIDTH / 2) + 'px';
+    } else {
+      mapPin.style.left = mapPinStyleLeft + 'px';
     }
 
-    mapPin.style.top = mapPin.offsetTop - shift.y + 'px';
-    mapPin.style.left = mapPin.offsetLeft - shift.x + 'px';
-    inputAddress.value = (mapPin.offsetTop - shift.y) + ',' + (mapPin.offsetLeft - shift.x);
+    if ((mapPin.offsetTop - shift.y + PIN_HEIGHT) <= MIN_Y) {
+      mapPin.style.top = MIN_Y - PIN_HEIGHT + 'px';
+    } else if (mapPin.offsetTop - shift.y >= MAX_Y) {
+      mapPin.style.top = MAX_Y + 'px';
+    } else {
+      mapPin.style.top = mapPinStyleTop + 'px';
+    }
+    inputAddress.value = (mapPin.offsetTop + PIN_HEIGHT) + ',' + (mapPin.offsetLeft - shift.x + PIN_WIDTH / 2);
   };
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
+
     if (dragged) {
       var onClickPreventDefault = function (evt) {
         evt.preventDefault();
-        inputAddress.value = upEvt.clientY + ', ' + upEvt.clientX;
+        inputAddress.value = (upEvt.clientY + PIN_HEIGHT) + ', ' + (upEvt.clientX + PIN_WIDTH / 2);
         mapPin.removeEventListener('click', onClickPreventDefault);
       };
       mapPin.addEventListener('click', onClickPreventDefault);
