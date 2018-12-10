@@ -26,17 +26,14 @@
     var target = evt.target;
     if ((target.value <= roomNumberInput.value) && (roomNumberInput.value !== 100)) {
       target.setCustomValidity('');
-    } else {
-      target.setCustomValidity('Вы выбрли некорректное количество гостей');
-    }
-    if (roomNumberInput.value === 100) {
+    } else if (roomNumberInput.value === 100) {
       target.value = 0;
       target.setCustomValidity('');
     } else {
       target.setCustomValidity('Вы выбрли некорректное количество гостей');
     }
-  });
-
+  }); 
+ 
   var defineMinPrise = function (obj) {
     var price;
     switch (obj) {
