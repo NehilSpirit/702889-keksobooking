@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-invalid-this */
 
 'use strict';
@@ -58,23 +59,6 @@ var before = document.querySelector('.map__filters-container');
 
 /* создает пустой контейнер для шаблонов */
 var fragment = document.createDocumentFragment();
-
-/* Для активации полей форм*/
-var mapFilters = document.querySelector('.map__filters');
-
-var mapFilter = document.querySelectorAll('.map__filter');
-
-var adFormElement = document.querySelectorAll('.ad-form__element');
-
-var adForm = document.querySelector('.ad-form.ad-form--disabled');
-
-var mapFaded = document.querySelector('.map.map--faded');
-
-/* для активации метки*/
-var inputAddress = document.querySelector('#address');
-
-var activeButton = document.querySelector('.map__pin--main');
-
 
 /* Вычисляет случайное чисто в диапазоне между min - max */
 function getRandomNum(min, max) {
@@ -227,8 +211,6 @@ var appendCard = function (item) {
   if (popup) {
     popup.parentNode.removeChild(popup);
   }
-  /* все конечно работает. но все на куче и в одной функции две переменные,
- которые ссылаются на один обьект. ну тоесть на разные но кажется что на один и тот же*/
   fragment.appendChild(createCard(item));
   similarListCardElement.insertBefore(fragment, before);
 
@@ -255,6 +237,23 @@ var oncloseMapPopupClick = function (closeButton, evt) {
   this.removeEventListener('keydown', onclosePopupEscPress);
   this.parentNode.removeChild(this);
 };
+
+
+/* Для активации полей форм*/
+var mapFilters = document.querySelector('.map__filters');
+
+var mapFilter = document.querySelectorAll('.map__filter');
+
+var adFormElement = document.querySelectorAll('.ad-form__element');
+
+var adForm = document.querySelector('.ad-form.ad-form--disabled');
+
+var mapFaded = document.querySelector('.map.map--faded');
+
+/* для активации метки*/
+
+var activeButton = document.querySelector('.map__pin--main');
+
 /* Удaляет атрибут disabled*/
 var removeDisabled = function (element) {
   element.removeAttribute('disabled');
@@ -278,8 +277,6 @@ var onActiveButtonMouseup = function (evt) {
   adFormElement.forEach(function (elem) {
     removeDisabled(elem);
   });
-
-  inputAddress.value = evt.clientX + ', ' + evt.clientY;
   /* наполняем массив */
   createInfoArray(ARR_NUM);
   appendPin(listPins);
@@ -287,63 +284,4 @@ var onActiveButtonMouseup = function (evt) {
 
 activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
 
-(function () {
-/* валидация формы */
-
-  var priceInput = document.querySelector('#price');
-  var typeInput = document.querySelector('#type');
-
-  var roomNumberInput = document.querySelector('#room_number');
-  var capacityInput = document.querySelector('#capacity');
-
-  var timeinInput = document.querySelector('#timein');
-  var timeoutInput = document.querySelector('#timeout');
-
-  timeoutInput.addEventListener('input', function (evt) {
-    timeinInput.value = evt.target.value;
-  });
-
-  timeinInput.addEventListener('input', function (evt) {
-    timeoutInput.value = evt.target.value;
-  });
-
-  typeInput.addEventListener('input', function (evt) {
-    defineMinPrise(evt.target.value);
-  });
-
-  capacityInput.addEventListener('input', function (evt) {
-    var target = evt.target;
-    if ((target.value <= roomNumberInput.value) && (roomNumberInput.value !== 100)) {
-      target.setCustomValidity('');
-    } else {
-      target.setCustomValidity('Вы выбрли некорректное количество гостей');
-    }
-    if (roomNumberInput.value === 100) {
-      target.value = 0;
-      target.setCustomValidity('');
-    } else {
-      target.setCustomValidity('Вы выбрли некорректное количество гостей');
-    }
-  });
-
-  var defineMinPrise = function (obj) {
-    var price;
-    switch (obj) {
-      case 'bungalo':
-        price = '0';
-        break;
-      case 'flat':
-        price = '1000';
-        break;
-      case 'house':
-        price = '5000';
-        break;
-      case 'palace':
-        price = '10000';
-        break;
-      default:
-    }
-    priceInput.minlength = priceInput.placeholder = price;
-  };
-})();
 
