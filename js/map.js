@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-/* eslint-disable no-invalid-this */
+
 'use strict';
 (function () {
   var ESC = 27;
@@ -20,7 +18,7 @@
 
   var listPins = [];
   /* наполнение массива */
-  window.createInfoArray = function (num) {
+  var createInfoArray = function (num) {
     for (var i = 0; i < num; i++) {
       listPins.push(window.createInfo(i));
     }
@@ -29,12 +27,14 @@
   };
 
   /* отрисовывает метки по клику на кекс */
-  window.appendPin = function (item) {
+  var appendPin = function (item) {
     item.forEach(function (elem) {
     // создаем элемент пин
       var pin = window.createPin(elem);
 
-      pin.addEventListener('click', onCreatePopupPinClin.bind(elem));
+      pin.addEventListener('click', function () {
+        onCreatePopupPinClin(elem);
+      });
 
       fragment.appendChild(pin);
     });
@@ -53,29 +53,31 @@
 
     var closeButton = similarListCardElement.querySelector('.popup__close');
     var mapPopup = similarListCardElement.querySelector('.map__card.popup');
-
-    closeButton.addEventListener('click', oncloseMapPopupClick.bind(mapPopup, closeButton), {once: true});
-    mapPopup.addEventListener('keydown', onclosePopupEscPress.bind(mapPopup, closeButton), {once: true});
+    closeButton.addEventListener('click', function () {
+      oncloseMapPopupClick(mapPopup, closeButton);
+    }, {once: true});
+    mapPopup.addEventListener('keydown', function (evt) {
+      onclosePopupEscPress(mapPopup, closeButton, evt);
+    }, {once: true});
 
   };
   var onCreatePopupPinClin = function (elem) {
-    appendCard(this);
+    appendCard(elem);
   };
 
   /* Закрывает карточку обьявления по ESc */
-  var onclosePopupEscPress = function (closeButton, evt) {
+  var onclosePopupEscPress = function (mapPopup, closeButton, evt) {
     if (evt.keyCode === ESC) {
       closeButton.removeEventListener('click', oncloseMapPopupClick);
-      this.removeEventListener('keydown', onclosePopupEscPress);
-      this.parentNode.removeChild(this);
+      mapPopup.removeEventListener('keydown', onclosePopupEscPress);
+      mapPopup.parentNode.removeChild(mapPopup);
     }
   };
   /* Закрывает карточку обьявления по клику*/
-  // eslint-disable-next-line no-unused-vars
-  var oncloseMapPopupClick = function (closeButton, evt) {
+  var oncloseMapPopupClick = function (mapPopup, closeButton) {
     closeButton.removeEventListener('click', oncloseMapPopupClick);
-    this.removeEventListener('keydown', onclosePopupEscPress);
-    this.parentNode.removeChild(this);
+    mapPopup.removeEventListener('keydown', onclosePopupEscPress);
+    mapPopup.parentNode.removeChild(mapPopup);
   };
 
   window.map = {

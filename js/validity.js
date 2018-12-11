@@ -1,4 +1,4 @@
-/* eslint-disable strict */
+
 'use strict';
 (function () {
   var priceInput = document.querySelector('#price');
@@ -22,18 +22,33 @@
     defineMinPrise(evt.target.value);
   });
 
-  capacityInput.addEventListener('input', function (evt) {
+  roomNumberInput.addEventListener('input', function (evt) {
     var target = evt.target;
-    if ((target.value <= roomNumberInput.value) && (roomNumberInput.value !== 100)) {
-      target.setCustomValidity('');
-    } else if (roomNumberInput.value === 100) {
-      target.value = 0;
-      target.setCustomValidity('');
+    if (target.value === '1') {
+      capacityInput.options[0].disabled = true;
+      capacityInput.options[1].disabled = true;
+      capacityInput.options[2].disabled = false;
+      capacityInput.options[3].disabled = true;
+    } else if (target.value === '2') {
+      capacityInput.options[0].disabled = true;
+      capacityInput.options[1].disabled = false;
+      capacityInput.options[2].disabled = false;
+      capacityInput.options[3].disabled = true;
+    } else if (target.value === '3') {
+      capacityInput.options[0].disabled = false;
+      capacityInput.options[1].disabled = false;
+      capacityInput.options[2].disabled = false;
+      capacityInput.options[3].disabled = true;
     } else {
-      target.setCustomValidity('Вы выбрли некорректное количество гостей');
+      capacityInput.options[0].disabled = true;
+      capacityInput.options[1].disabled = true;
+      capacityInput.options[2].disabled = true;
+      capacityInput.options[3].disabled = false;
     }
-  }); 
- 
+
+  });
+
+
   var defineMinPrise = function (obj) {
     var price;
     switch (obj) {

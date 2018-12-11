@@ -1,7 +1,7 @@
 'use strict';
 (function () {
-  var PIN_HEIGHT = 40;
-  var PIN_WIDTH = 40;
+  var PIN_HEIGHT = 65;
+  var PIN_WIDTH = 65;
 
   /* шаблон  для меток который будем вставлять */
   var similarPinTemplate = document.querySelector('#pin')

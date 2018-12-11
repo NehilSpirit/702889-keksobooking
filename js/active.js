@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 'use strict';
 /* Для активации полей форм и меток */
 (function () {
@@ -12,6 +11,8 @@
   var adForm = document.querySelector('.ad-form.ad-form--disabled');
 
   var mapFaded = document.querySelector('.map.map--faded');
+  var roomInput = document.querySelector('#room_number');
+  var capInput = document.querySelector('#capacity');
 
   /* для активации главной метки*/
 
@@ -23,7 +24,7 @@
   };
 
   /* По клику активирует форму и пины */
-  var onActiveButtonMouseup = function (evt) {
+  var onActiveButtonMouseup = function () {
     mapFaded.classList.remove('map--faded');
     mapFilters.removeAttribute('disabled');
     adForm.classList.remove('ad-form--disabled');
@@ -35,6 +36,12 @@
     adFormElement.forEach(function (elem) {
       removeDisabled(elem);
     });
+    if (roomInput.value) {
+      capInput.options[0].disabled = true;
+      capInput.options[1].disabled = true;
+      capInput.options[2].disabled = false;
+      capInput.options[3].disabled = true;
+    }
     /* наполняем массив */
     window.map.createInfoArray(ARR_NUM);
     window.map.appendPin(window.listPins);
