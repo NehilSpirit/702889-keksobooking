@@ -1,6 +1,8 @@
 
 'use strict';
 (function () {
+  var MAX_ROOM_NUM = 100;
+
   var priceInput = document.querySelector('#price');
   var typeInput = document.querySelector('#type');
 
@@ -22,32 +24,40 @@
     defineMinPrise(evt.target.value);
   });
 
-  roomNumberInput.addEventListener('input', function (evt) {
-    var target = evt.target;
-    if (target.value === '1') {
-      capacityInput.options[0].disabled = true;
-      capacityInput.options[1].disabled = true;
-      capacityInput.options[2].disabled = false;
-      capacityInput.options[3].disabled = true;
-    } else if (target.value === '2') {
-      capacityInput.options[0].disabled = true;
-      capacityInput.options[1].disabled = false;
-      capacityInput.options[2].disabled = false;
-      capacityInput.options[3].disabled = true;
-    } else if (target.value === '3') {
-      capacityInput.options[0].disabled = false;
-      capacityInput.options[1].disabled = false;
-      capacityInput.options[2].disabled = false;
-      capacityInput.options[3].disabled = true;
+  var setCapacity = function (e) {
+    cpacityOptionsCondition(e.target.value);
+  };
+
+  var setOptionsDisabled = function (inpt) {
+    Array.prototype.forEach.call(inpt.options, function (option) {
+      option.disabled = true;
+    });
+  };
+
+  var cpacityOptionsCondition = function (roomNumInpt) {
+    setOptionsDisabled(capacityInput);
+    var roomNum = parseInt(roomNumInpt, 10);
+    if (roomNum === MAX_ROOM_NUM) {
+      capacityInput.options[capacityInput.length - 1].disabled = false;
+      capacityInput.options[capacityInput.length - 1].selected = true;
     } else {
-      capacityInput.options[0].disabled = true;
-      capacityInput.options[1].disabled = true;
-      capacityInput.options[2].disabled = true;
-      capacityInput.options[3].disabled = false;
+
+      var cpArray = [];
+      for (var i = 0; i < capacityInput.options.length; i++) {
+        var option = capacityInput.options[i];
+        cpArray.push(option);
+      }
+      cpArray = cpArray.slice(0, -1);
+      var filteredArray = cpArray.filter(function (element) {
+        var value = parseInt(element.value, 10);
+        return value <= roomNum;
+      });
+      filteredArray.forEach(function (opt) {
+        opt.disabled = false;
+      });
+      filteredArray[0].selected = true;
     }
-
-  });
-
+  };
 
   var defineMinPrise = function (obj) {
     var price;
@@ -68,6 +78,9 @@
     }
     priceInput.minlength = priceInput.placeholder = price;
   };
+
+  roomNumberInput.addEventListener('input', setCapacity);
+  cpacityOptionsCondition(roomNumberInput.value);
 })();
 
 

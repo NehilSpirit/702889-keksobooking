@@ -11,8 +11,7 @@
   var adForm = document.querySelector('.ad-form.ad-form--disabled');
 
   var mapFaded = document.querySelector('.map.map--faded');
-  var roomInput = document.querySelector('#room_number');
-  var capInput = document.querySelector('#capacity');
+
 
   /* для активации главной метки*/
 
@@ -36,12 +35,6 @@
     adFormElement.forEach(function (elem) {
       removeDisabled(elem);
     });
-    if (roomInput.value) {
-      capInput.options[0].disabled = true;
-      capInput.options[1].disabled = true;
-      capInput.options[2].disabled = false;
-      capInput.options[3].disabled = true;
-    }
     /* наполняем массив */
     window.map.createInfoArray(ARR_NUM);
     window.map.appendPin(window.listPins);
