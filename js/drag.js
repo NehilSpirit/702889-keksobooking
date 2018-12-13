@@ -1,4 +1,4 @@
-/* eslint-disable strict */
+
 'use strict';
 (function () {
   var mapPin = document.querySelector('.map__pin--main');
@@ -9,7 +9,7 @@
   var MIN_X = 0;
   var MIN_Y = 130;
   var PIN_HEIGHT = 65;
-  var PIN_WIDTH = 66;
+  var PIN_WIDTH = 65;
   var startCoords = {};
   var dragged = '';
 
