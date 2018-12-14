@@ -1,7 +1,6 @@
 'use strict';
 /* Для активации полей форм и меток */
 (function () {
-  var ARR_NUM = 8;
   var mapFilters = document.querySelector('.map__filters');
 
   var mapFilter = document.querySelectorAll('.map__filter');
@@ -22,6 +21,7 @@
     element.removeAttribute('disabled');
   };
 
+
   /* По клику активирует форму и пины */
   var onActiveButtonMouseup = function () {
     mapFaded.classList.remove('map--faded');
@@ -35,9 +35,7 @@
     adFormElement.forEach(function (elem) {
       removeDisabled(elem);
     });
-    /* наполняем массив */
-    window.map.createInfoArray(ARR_NUM);
-    window.map.appendPin(window.listPins);
+    window.backend.load(window.onLoad, window.onError);
   };
 
   activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});

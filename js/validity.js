@@ -78,6 +78,20 @@
     }
     priceInput.minlength = priceInput.placeholder = price;
   };
+  /* отправляет данные формы на сервер  */
+  var form = document.querySelector('.ad-form');
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(form), function () {
+      if (window.onSucsess) {
+        window.createSucsess();
+      } if (window.onError) {
+        window.createError();
+      }
+    });
+    evt.stopPropagation(); // тут надо вернуть форме настройки по дефолту как?
+  });
+
 
   roomNumberInput.addEventListener('input', setCapacity);
   cpacityOptionsCondition(roomNumberInput.value);

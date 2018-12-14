@@ -1,6 +1,6 @@
-'use strict';
-(function () {
-  var similarListCardElement = document.querySelector('.map');
+//'use strict';
+//(function () {
+ /* var similarListCardElement = document.querySelector('.map');
 
   var offerPhotos = [
     'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -32,16 +32,16 @@
 
   var checkinCheckout = ['12:00', '13:00', '14:00'];
   /* Вычисляет случайное чисто в диапазоне между min - max */
-  function getRandomNum(min, max) {
+ /* function getRandomNum(min, max) {
     return Math.round(Math.random() * (max - min) + min); // ну тут все ясно и так)
   }
   /* Вычисляет случайное чисто в пределах массива */
-  var getRandomElem = function (arr) {
+ /* var getRandomElem = function (arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   };
 
   /* перемешивание Фишер-Йетс */
-  var shuffle = function (array) {
+  /*var shuffle = function (array) {
     for (var i = array.length - 1; i > 0; i--) {
       var randomNumber = getRandomNum(0, i);
       var getRandomElement = array[randomNumber];
@@ -82,6 +82,7 @@
       }
     };
   };
-  window.createInfo = createInfo;
-})();
+  window.createInfo = createInfo; */
+
+////})();
 

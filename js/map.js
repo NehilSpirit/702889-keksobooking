@@ -15,17 +15,6 @@
   /* создает пустой контейнер для шаблонов */
   var fragment = document.createDocumentFragment();
 
-
-  var listPins = [];
-  /* наполнение массива */
-  var createInfoArray = function (num) {
-    for (var i = 0; i < num; i++) {
-      listPins.push(window.createInfo(i));
-    }
-    // eslint-disable-next-line no-return-assign
-    return window.listPins = listPins;
-  };
-
   /* отрисовывает метки по клику на кекс */
   var appendPin = function (item) {
     item.forEach(function (elem) {
@@ -79,9 +68,6 @@
     mapPopup.removeEventListener('keydown', onclosePopupEscPress);
     mapPopup.parentNode.removeChild(mapPopup);
   };
+  window.appendPin = appendPin;
 
-  window.map = {
-    createInfoArray: createInfoArray,
-    appendPin: appendPin
-  };
 })();
