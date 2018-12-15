@@ -33,10 +33,7 @@
 
   // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
   var appendCard = function (item) {
-    var popup = document.querySelector('.map__card.popup');
-    if (popup) {
-      popup.parentNode.removeChild(popup);
-    }
+    window.active.isPopup();
     fragment.appendChild(window.createCard(item));
     similarListCardElement.insertBefore(fragment, before);
 

@@ -2,15 +2,17 @@
 'use strict';
 (function () {
   var MAX_ROOM_NUM = 100;
-
-  var priceInput = document.querySelector('#price');
-  var typeInput = document.querySelector('#type');
-
-  var roomNumberInput = document.querySelector('#room_number');
-  var capacityInput = document.querySelector('#capacity');
-
-  var timeinInput = document.querySelector('#timein');
-  var timeoutInput = document.querySelector('#timeout');
+  var adFormReset = document.querySelector('.ad-form__reset');
+  var form = document.querySelector('.ad-form');
+  var title = form.querySelector('#title');
+  var desciption = form.querySelector('#description');
+  var feature = form.querySelectorAll('.feature__checkbox');
+  var priceInput = form.querySelector('#price');
+  var typeInput = form.querySelector('#type');
+  var roomNumberInput = form.querySelector('#room_number');
+  var capacityInput = form.querySelector('#capacity');
+  var timeinInput = form.querySelector('#timein');
+  var timeoutInput = form.querySelector('#timeout');
 
   timeoutInput.addEventListener('input', function (evt) {
     timeinInput.value = evt.target.value;
@@ -78,20 +80,47 @@
     }
     priceInput.minlength = priceInput.placeholder = price;
   };
+  /* возврыщает форме значения по умолчанию*/
+  var backFormDefoalt = function () {
+    title.value = '';
+    desciption.value = '';
+    priceInput.value = '';
+    typeInput.options[1].selected = 'true';
+    timeinInput.options[0].selected = 'true';
+    timeoutInput.options[0].selected = 'true';
+    roomNumberInput.options[0].selected = 'true';
+    capacityInput.options[0].selected = 'true';
+    feature.forEach(function (elem) {
+      elem.checked = false;
+    });
+  };
+  /* сообщает об успешной отправке формы*/
+  var onSucsess = function () {
+    window.main.createAds(window.main.templateSucsess, window.main.main);
+    window.active.deactivatePage();
+    backFormDefoalt();
+  };
+  /* сообщает об ошибке отправки  формы*/
+  var onError = function () {
+    window.main.createAds(window.main.templateError, window.main.main);
+  };
+
   /* отправляет данные формы на сервер  */
-  var form = document.querySelector('.ad-form');
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.save(new FormData(form), function () {
-      if (window.onSucsess) {
-        window.createSucsess();
-      } if (window.onError) {
-        window.createError();
-      }
-    });
-    evt.stopPropagation(); // тут надо вернуть форме настройки по дефолту как?
+    var formData = new FormData(form);
+    window.backend.save(formData, onSucsess, onError);
   });
-
+  /* переводит страницу в неактивное состояние по нажатию на кнопку "очистить" */
+  adFormReset.addEventListener('keypress', function () {
+    backFormDefoalt();
+    window.active.deactivatePage();
+  });
+  /* переводит страницу в неактивное состояние по клику на кнопку "очистить" */
+  adFormReset.addEventListener('click', function () {
+    backFormDefoalt();
+    window.active.deactivatePage();
+  });
 
   roomNumberInput.addEventListener('input', setCapacity);
   cpacityOptionsCondition(roomNumberInput.value);
