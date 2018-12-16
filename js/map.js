@@ -19,7 +19,7 @@
   var appendPin = function (item) {
     item.forEach(function (elem) {
     // создаем элемент пин
-      var pin = window.createPin(elem);
+      var pin = window.template.createPin(elem);
 
       pin.addEventListener('click', function () {
         onCreatePopupPinClin(elem);
@@ -34,7 +34,7 @@
   // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
   var appendCard = function (item) {
     window.active.isPopup();
-    fragment.appendChild(window.createCard(item));
+    fragment.appendChild(window.template.createCard(item));
     similarListCardElement.insertBefore(fragment, before);
 
     var closeButton = similarListCardElement.querySelector('.popup__close');
@@ -56,14 +56,16 @@
     if (evt.keyCode === ESC) {
       closeButton.removeEventListener('click', oncloseMapPopupClick);
       mapPopup.removeEventListener('keydown', onclosePopupEscPress);
-      mapPopup.parentNode.removeChild(mapPopup);
+      window.active.isPopup();
+      // mapPopup.parentNode.removeChild(mapPopup);
     }
   };
   /* Закрывает карточку обьявления по клику*/
   var oncloseMapPopupClick = function (mapPopup, closeButton) {
     closeButton.removeEventListener('click', oncloseMapPopupClick);
     mapPopup.removeEventListener('keydown', onclosePopupEscPress);
-    mapPopup.parentNode.removeChild(mapPopup);
+    window.active.isPopup();
+    // mapPopup.parentNode.removeChild(mapPopup);
   };
   window.appendPin = appendPin;
 

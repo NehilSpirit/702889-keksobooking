@@ -6,7 +6,6 @@
   .content.querySelector('.success');
   var templateError = document.querySelector('#error')
   .content.querySelector('.error');
-  // var errorButton = document.querySelector('.error__button');
 
   /* создает пустой контейнер для шаблонов */
   var fragment = document.createDocumentFragment();
@@ -28,6 +27,7 @@
 
   /* Закрывает  обьявлениe по ESc */
   var oncloseEscPress = function (ads, evt) {
+    console.log(ads);
     if (evt.keyCode === ESC) {
       document.removeEventListener('keydown', oncloseEscPress);
       document.removeEventListener('click', oncloseClick);
@@ -36,6 +36,7 @@
   };
   /* Закрывает  обьявлениt по click  на произвольную область */
   var oncloseClick = function (ads) {
+    console.log(ads);
     document.removeEventListener('keydown', oncloseEscPress);
     document.removeEventListener('click', oncloseClick);
     ads.parentNode.removeChild(ads);
