@@ -15,22 +15,11 @@
   /* создает пустой контейнер для шаблонов */
   var fragment = document.createDocumentFragment();
 
-
-  var listPins = [];
-  /* наполнение массива */
-  var createInfoArray = function (num) {
-    for (var i = 0; i < num; i++) {
-      listPins.push(window.createInfo(i));
-    }
-    // eslint-disable-next-line no-return-assign
-    return window.listPins = listPins;
-  };
-
   /* отрисовывает метки по клику на кекс */
   var appendPin = function (item) {
     item.forEach(function (elem) {
     // создаем элемент пин
-      var pin = window.createPin(elem);
+      var pin = window.template.createPin(elem);
 
       pin.addEventListener('click', function () {
         onCreatePopupPinClin(elem);
@@ -44,11 +33,8 @@
 
   // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
   var appendCard = function (item) {
-    var popup = document.querySelector('.map__card.popup');
-    if (popup) {
-      popup.parentNode.removeChild(popup);
-    }
-    fragment.appendChild(window.createCard(item));
+    window.active.isPopup();
+    fragment.appendChild(window.template.createCard(item));
     similarListCardElement.insertBefore(fragment, before);
 
     var closeButton = similarListCardElement.querySelector('.popup__close');
@@ -70,18 +56,17 @@
     if (evt.keyCode === ESC) {
       closeButton.removeEventListener('click', oncloseMapPopupClick);
       mapPopup.removeEventListener('keydown', onclosePopupEscPress);
-      mapPopup.parentNode.removeChild(mapPopup);
+      window.active.isPopup();
+      // mapPopup.parentNode.removeChild(mapPopup);
     }
   };
   /* Закрывает карточку обьявления по клику*/
   var oncloseMapPopupClick = function (mapPopup, closeButton) {
     closeButton.removeEventListener('click', oncloseMapPopupClick);
     mapPopup.removeEventListener('keydown', onclosePopupEscPress);
-    mapPopup.parentNode.removeChild(mapPopup);
+    window.active.isPopup();
+    // mapPopup.parentNode.removeChild(mapPopup);
   };
+  window.appendPin = appendPin;
 
-  window.map = {
-    createInfoArray: createInfoArray,
-    appendPin: appendPin
-  };
 })();

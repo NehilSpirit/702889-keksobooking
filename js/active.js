@@ -1,25 +1,58 @@
 'use strict';
 /* Для активации полей форм и меток */
 (function () {
-  var ARR_NUM = 8;
   var mapFilters = document.querySelector('.map__filters');
-
   var mapFilter = document.querySelectorAll('.map__filter');
-
   var adFormElement = document.querySelectorAll('.ad-form__element');
-
   var adForm = document.querySelector('.ad-form.ad-form--disabled');
-
   var mapFaded = document.querySelector('.map.map--faded');
-
-
-  /* для активации главной метки*/
-
   var activeButton = document.querySelector('.map__pin--main');
 
+  /* возвращает центральный пин на место по умолчанию */
+  var backInPlase = function (variab, left, top) {
+    variab.style.left = left + 'px';
+    variab.style.top = top + 'px';
+  };
+  /* удаляет карточку обьявления, если она есть*/
+  var isPopup = function () {
+    var popup = document.querySelector('.map__card.popup');
+    if (popup) {
+      popup.parentNode.removeChild(popup);
+    }
+  };
   /* Удaляет атрибут disabled*/
   var removeDisabled = function (element) {
     element.removeAttribute('disabled');
+  };
+  /* Добавляет атрибут disabled*/
+  var addDisabled = function (elem) {
+    elem.setAttribute('disabled', 'disabled');
+  };
+
+  var removePins = function () {
+    Array.prototype.slice.call(document.querySelectorAll('.map__pin'), 1)
+    .forEach(function (e) {
+      e.parentNode.removeChild(e);
+    });
+  };
+  /* получает сетевые данные и вызывает функцию фильтрации */
+  var onLoad = function (data) {
+    checkInfo(data);
+    return data;
+  };
+  /* сообщает об ошибке при загрузке данных*/
+  var onError = function (message) {
+    return message;
+  };
+  /* фильтрует полученные данные и вызывает отрисовку пинов */
+  var checkInfo = function (info) {
+    var infoFilter = info.filter(function (element) {
+      if (element.offer) {
+        return true;
+      }
+      return false;
+    });
+    window.appendPin(infoFilter);
   };
 
   /* По клику активирует форму и пины */
@@ -35,11 +68,31 @@
     adFormElement.forEach(function (elem) {
       removeDisabled(elem);
     });
-    /* наполняем массив */
-    window.map.createInfoArray(ARR_NUM);
-    window.map.appendPin(window.listPins);
+    window.backend.load(onLoad, onError);
   };
 
   activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
+
+  /* выполняет деактивацию страницы */
+  var deactivatePage = function () {
+    removePins();
+    isPopup();
+    backInPlase(activeButton, 570, 375);
+    mapFaded.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    addDisabled(mapFilters);
+    addDisabled(adForm);
+    mapFilter.forEach(function (elem) {
+      addDisabled(elem);
+    });
+    adFormElement.forEach(function (elem) {
+      addDisabled(elem);
+    });
+  };
+  window.active = {
+    deactivatePage: deactivatePage,
+    backInPlase: backInPlase,
+    isPopup: isPopup,
+  };
 })();
 
