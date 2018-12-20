@@ -8,7 +8,6 @@
   var mapFaded = document.querySelector('.map.map--faded');
   var activeButton = document.querySelector('.map__pin--main');
   var housingFeatures = mapFilters.querySelector('#housing-features');
-  console.log(housingFeatures);
 
   /* возвращает центральный пин на место по умолчанию */
   var backInPlase = function (variab, left, top) {
@@ -38,7 +37,6 @@
     });
   };
 
-
   /* По клику активирует форму и пины */
   var onActiveButtonMouseup = function () {
     mapFaded.classList.remove('map--faded');
@@ -63,6 +61,7 @@
     removePins();
     isPopup();
     backInPlase(activeButton, 570, 375);
+    window.filter.defaultFilters();
     mapFaded.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     addDisabled(mapFilters);
@@ -81,7 +80,6 @@
     backInPlase: backInPlase,
     isPopup: isPopup,
     removePins: removePins
-   
   };
 })();
 

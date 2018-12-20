@@ -24,18 +24,14 @@
     .forEach(function (elem) {
     // создаем элемент пин
       var pin = window.template.createPin(elem);
-
       pin.addEventListener('click', function () {
         onCreatePopupPinClin(elem);
       });
-      
       fragment.appendChild(pin);
-    
     });
     similarListElement.appendChild(fragment);
 
   };
-
   // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
   var appendCard = function (item) {
     window.active.isPopup();
@@ -46,19 +42,16 @@
     mapPopup = similarListCardElement.querySelector('.map__card.popup');
     closeButton.addEventListener('click', oncloseMapPopupClick, {once: true});
     mapPopup.addEventListener('keydown', onclosePopupEscPress, {once: true});
-
   };
   var onCreatePopupPinClin = function (elem) {
     appendCard(elem);
   };
-
   /* Закрывает карточку обьявления по ESc */
   var onclosePopupEscPress = function (evt) {
     if (evt.keyCode === ESC) {
       closeButton.removeEventListener('click', oncloseMapPopupClick);
       mapPopup.removeEventListener('keydown', onclosePopupEscPress);
       window.active.isPopup();
-
     }
   };
   /* Закрывает карточку обьявления по клику*/

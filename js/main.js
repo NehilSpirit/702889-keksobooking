@@ -16,12 +16,9 @@
     ads = template.cloneNode(true);
     fragment.appendChild(ads);
     plase.appendChild(fragment);
-
     document.addEventListener('keydown', oncloseEscPress, {once: true});
-
     ads.addEventListener('click', oncloseClick, {once: true});
   };
-
   /* Закрывает  обьявлениe по ESc */
   var oncloseEscPress = function (evt) {
     if (evt.keyCode === ESC) {
@@ -36,7 +33,6 @@
     ads.removeEventListener('click', oncloseClick);
     ads.parentNode.removeChild(ads);
   };
-
   window.main = {
     createAds: createAds,
     templateSucsess: templateSucsess,
