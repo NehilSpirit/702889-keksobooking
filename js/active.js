@@ -7,6 +7,7 @@
   var adForm = document.querySelector('.ad-form.ad-form--disabled');
   var mapFaded = document.querySelector('.map.map--faded');
   var activeButton = document.querySelector('.map__pin--main');
+  var housingFeatures = mapFilters.querySelector('#housing-features');
 
   /* возвращает центральный пин на место по умолчанию */
   var backInPlase = function (variab, left, top) {
@@ -35,25 +36,6 @@
       e.parentNode.removeChild(e);
     });
   };
-  /* получает сетевые данные и вызывает функцию фильтрации */
-  var onLoad = function (data) {
-    checkInfo(data);
-    return data;
-  };
-  /* сообщает об ошибке при загрузке данных*/
-  var onError = function (message) {
-    return message;
-  };
-  /* фильтрует полученные данные и вызывает отрисовку пинов */
-  var checkInfo = function (info) {
-    var infoFilter = info.filter(function (element) {
-      if (element.offer) {
-        return true;
-      }
-      return false;
-    });
-    window.appendPin(infoFilter);
-  };
 
   /* По клику активирует форму и пины */
   var onActiveButtonMouseup = function () {
@@ -61,6 +43,7 @@
     mapFilters.removeAttribute('disabled');
     adForm.classList.remove('ad-form--disabled');
     removeDisabled(adForm);
+    removeDisabled(housingFeatures);
 
     mapFilter.forEach(function (elem) {
       removeDisabled(elem);
@@ -68,7 +51,7 @@
     adFormElement.forEach(function (elem) {
       removeDisabled(elem);
     });
-    window.backend.load(onLoad, onError);
+    window.backend.load(window.filter.onLoad, window.filter.onError);
   };
 
   activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
@@ -78,21 +61,25 @@
     removePins();
     isPopup();
     backInPlase(activeButton, 570, 375);
+    window.filter.defaultFilters();
     mapFaded.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     addDisabled(mapFilters);
     addDisabled(adForm);
+    addDisabled(housingFeatures);
     mapFilter.forEach(function (elem) {
       addDisabled(elem);
     });
     adFormElement.forEach(function (elem) {
       addDisabled(elem);
     });
+    activeButton.addEventListener('mouseup', onActiveButtonMouseup, {once: true});
   };
   window.active = {
     deactivatePage: deactivatePage,
     backInPlase: backInPlase,
     isPopup: isPopup,
+    removePins: removePins
   };
 })();
 

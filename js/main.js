@@ -9,39 +9,30 @@
 
   /* создает пустой контейнер для шаблонов */
   var fragment = document.createDocumentFragment();
+  var ads = '';
 
   /* создает обьявление успешной отправки формы на сервер*/
   var createAds = function (template, plase) {
-    var ads = template.cloneNode(true);
+    ads = template.cloneNode(true);
     fragment.appendChild(ads);
     plase.appendChild(fragment);
-
-    document.addEventListener('keydown', function (evt) {
-      oncloseEscPress(ads, evt);
-    }, {once: true});
-
-    document.addEventListener('click', function () {
-      oncloseClick(ads);
-    }, {once: true});
+    document.addEventListener('keydown', oncloseEscPress, {once: true});
+    ads.addEventListener('click', oncloseClick, {once: true});
   };
-
   /* Закрывает  обьявлениe по ESc */
-  var oncloseEscPress = function (ads, evt) {
-    console.log(ads);
+  var oncloseEscPress = function (evt) {
     if (evt.keyCode === ESC) {
       document.removeEventListener('keydown', oncloseEscPress);
-      document.removeEventListener('click', oncloseClick);
+      ads.removeEventListener('click', oncloseClick);
       ads.parentNode.removeChild(ads);
     }
   };
   /* Закрывает  обьявлениt по click  на произвольную область */
-  var oncloseClick = function (ads) {
-    console.log(ads);
+  var oncloseClick = function () {
     document.removeEventListener('keydown', oncloseEscPress);
-    document.removeEventListener('click', oncloseClick);
+    ads.removeEventListener('click', oncloseClick);
     ads.parentNode.removeChild(ads);
   };
-
   window.main = {
     createAds: createAds,
     templateSucsess: templateSucsess,

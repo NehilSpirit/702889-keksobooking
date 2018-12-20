@@ -121,7 +121,6 @@
     backFormDefoalt();
     window.active.deactivatePage();
   });
-
   roomNumberInput.addEventListener('input', setCapacity);
   cpacityOptionsCondition(roomNumberInput.value);
 })();

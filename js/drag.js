@@ -8,8 +8,8 @@
   var MAX_Y = 630;
   var MIN_X = 0;
   var MIN_Y = 130;
-  var PIN_HEIGHT = 65;
-  var PIN_WIDTH = 65;
+  var PIN_HEIGHT = 66;
+  var PIN_WIDTH = 66;
   var startCoords = {};
   var dragged = '';
 
