@@ -1,10 +1,10 @@
 'use strict';
 (function () {
   var typeMap = {
-    flat: 'Квартира',
-    palace: 'Дворец',
-    house: 'Дом',
-    bung: 'Бунгало'
+    FLAT: 'Квартира',
+    PAlACE: 'Дворец',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
   var PIN_HEIGHT = 65;
   var PIN_WIDTH = 65;
