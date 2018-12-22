@@ -76,5 +76,6 @@
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   };
+  window.inputAddress = inputAddress;
 })();
 

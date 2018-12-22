@@ -15,8 +15,6 @@
 
   /* создает пустой контейнер для шаблонов */
   var fragment = document.createDocumentFragment();
-  var closeButton;
-  var mapPopup;
 
   /* отрисовывает метки по клику на кекс */
   var appendPin = function (item) {
@@ -35,31 +33,29 @@
   // Отрисoвывает сгенерированные DOM-элементы (карточки) в блок .map__pins.
   var appendCard = function (item) {
     window.active.isPopup();
-    fragment.appendChild(window.template.createCard(item));
-    similarListCardElement.insertBefore(fragment, before);
-
-    closeButton = similarListCardElement.querySelector('.popup__close');
-    mapPopup = similarListCardElement.querySelector('.map__card.popup');
+    var mapPopup = window.template.createCard(item);
+    var closeButton = mapPopup.querySelector('.popup__close');
     closeButton.addEventListener('click', oncloseMapPopupClick, {once: true});
-    mapPopup.addEventListener('keydown', onclosePopupEscPress, {once: true});
+    document.addEventListener('keydown', onclosePopupEscPress, {once: true});
+    similarListCardElement.insertBefore(mapPopup, before);
   };
   var onCreatePopupPinClin = function (elem) {
     appendCard(elem);
   };
-  /* Закрывает карточку обьявления по ESc */
+
+  var closePopup = function () {
+    window.active.isPopup();
+  };
+
+  /* Удаляет карточку обьявления по ESc */
   var onclosePopupEscPress = function (evt) {
     if (evt.keyCode === ESC) {
-      closeButton.removeEventListener('click', oncloseMapPopupClick);
-      mapPopup.removeEventListener('keydown', onclosePopupEscPress);
-      window.active.isPopup();
+      closePopup();
     }
   };
-  /* Закрывает карточку обьявления по клику*/
+  /* Удаляет карточку обьявления по клику*/
   var oncloseMapPopupClick = function () {
-    closeButton.removeEventListener('click', oncloseMapPopupClick);
-    mapPopup.removeEventListener('keydown', onclosePopupEscPress);
-    window.active.isPopup();
-
+    closePopup();
   };
   window.appendPin = appendPin;
 
