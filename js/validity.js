@@ -93,6 +93,7 @@
     feature.forEach(function (elem) {
       elem.checked = false;
     });
+    cpacityOptionsCondition(roomNumberInput.value);
   };
   /* сообщает об успешной отправке формы*/
   var onSucsess = function () {

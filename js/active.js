@@ -14,6 +14,9 @@
     variab.style.left = left + 'px';
     variab.style.top = top + 'px';
   };
+  var correctAddress = function (variab, x, y) {
+    variab.value = x + ':' + y;
+  };
   /* удаляет карточку обьявления, если она есть*/
   var isPopup = function () {
     var popup = document.querySelector('.map__card.popup');
@@ -61,6 +64,7 @@
     removePins();
     isPopup();
     backInPlase(activeButton, 570, 375);
+    correctAddress(window.inputAddress, 570, 375);
     window.filter.defaultFilters();
     mapFaded.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
